@@ -1,0 +1,2 @@
+/Synthtext/imgs/1.png
+/Synthtext/imgs/2.png

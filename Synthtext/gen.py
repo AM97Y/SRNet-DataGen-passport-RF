@@ -33,10 +33,10 @@ class datagen():
 
         font_dir = os.path.join(cur_file_path, data_cfg.font_dir)
         self.font_list = os.listdir(font_dir)
-        #print(font_dir)
+        # print(font_dir)
         self.font_list = [os.path.join(font_dir, font_name) for font_name in self.font_list]
         self.standard_font_path = os.path.join(cur_file_path, data_cfg.standard_font_path)
-        #print(self.standard_font_path)
+        # print(self.standard_font_path)
         color_filepath = os.path.join(cur_file_path, data_cfg.color_filepath)
         self.colorsRGB, self.colorsLAB = colorize.get_color_matrix(color_filepath)
 
@@ -68,7 +68,7 @@ class datagen():
             # choose font, text and bg
             font = np.random.choice(self.font_list)
             text1, text2 = np.random.choice(self.text_list), text
-            #print(text1, text2)
+            # print(text1, text2)
             # Сделать проверку на если они не равны
             """upper_rand = np.random.rand()
             if upper_rand < data_cfg.capitalize_rate + data_cfg.uppercase_rate:
@@ -80,7 +80,7 @@ class datagen():
             bg = cv2.imread(dir + random.choice(self.bg_list))
 
             # init font
-            #print(font)
+            # print(font)
             font = freetype.Font(font)
             font.antialiased = True
             font.origin = True
@@ -95,12 +95,12 @@ class datagen():
             # render text to surf
             param = {
                 'is_curve': False,
-                'curve_rate': data_cfg.curve_rate_param[0] * np.random.randn()
-                              + data_cfg.curve_rate_param[1],
+                'curve_rate': [data_cfg.curve_rate_param[0] * np.random.randn()
+                               + data_cfg.curve_rate_param[1]],
                 'curve_center': np.random.randint(0, len(text1))
             }
             surf1, bbs1 = render_text_mask.render_text(font, text1, param)
-            param['curve_center'] = int(param['curve_center'] / len(text1) * len(text2))
+            param['curve_center'] = 0
             surf2, bbs2 = render_text_mask.render_text(font, text2, param)
 
             # get padding
@@ -115,6 +115,7 @@ class datagen():
             perspect = data_cfg.perspect_param[0] * np.random.randn(2) + data_cfg.perspect_param[1]
             surf1 = render_text_mask.perspective(surf1, rotate, zoom, shear, perspect, padding)  # w first
             surf2 = render_text_mask.perspective(surf2, rotate, zoom, shear, perspect, padding)  # w first
+
             # print(surf1)
             # choose a background
             surf1_h, surf1_w = surf1.shape[:2]
@@ -149,8 +150,8 @@ class datagen():
             min_h2 = np.min(bbs2[:, 3])
             min_h = min(min_h1, min_h2)
             if not data_cfg.red:
-                fg_pix = np.random.choice(range(0, 170), 1, replace=False)
-                bg_pix = np.random.choice(range(0, 170), 1, replace=False)
+                fg_pix = (130, 30, 30)
+                bg_pix = (130, 30, 30)
                 fg_col, bg_col = np.array([fg_pix[0], fg_pix[0], fg_pix[0]]), np.array(
                     [bg_pix[0], bg_pix[0], bg_pix[0]])
             else:
@@ -177,6 +178,7 @@ class datagen():
 
             # skeletonization
             t_sk = skeletonization.skeletonization(surf2, 127)
+            # print(fg_col, bg_col, self.colorsRGB, self.colorsLAB, min_h, param)
             break
 
         return [i_t, i_s, t_sk, t_t, t_b, t_f, surf2]

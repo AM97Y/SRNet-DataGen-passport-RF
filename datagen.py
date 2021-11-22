@@ -32,8 +32,8 @@ def main():
     makedirs(t_b_dir)
     makedirs(t_f_dir)
     makedirs(mask_t_dir)
-    #mp_gen = multiprocess_datagen(cfg.process_num, cfg.data_capacity)
-    #mp_gen.multiprocess_runningqueue()
+    # mp_gen = multiprocess_datagen(cfg.process_num, cfg.data_capacity)
+    # mp_gen.multiprocess_runningqueue()
     digit_num = len(str(cfg.sample_num)) - 1
     text_filepath = os.path.join('./Synthtext/data', 'texts.txt')
     text_list = open(text_filepath, 'r').readlines()
@@ -41,7 +41,7 @@ def main():
     for idx, text in enumerate(text_list):
         print("Generating step {:>6d} / {:>6d}".format(idx + 1, len(text_list)))
         gen = datagen()
-        i_t, i_s, t_sk, t_t, t_b, t_f, mask_t = gen.gen_srnet_data_with_background(text) #mp_gen.dequeue_data()
+        i_t, i_s, t_sk, t_t, t_b, t_f, mask_t = gen.gen_srnet_data_with_background(text)  # mp_gen.dequeue_data()
         i_t_path = os.path.join(i_t_dir, str(idx).zfill(digit_num) + '.png')
         i_s_path = os.path.join(i_s_dir, str(idx).zfill(digit_num) + '.png')
         t_sk_path = os.path.join(t_sk_dir, str(idx).zfill(digit_num) + '.png')
@@ -57,7 +57,7 @@ def main():
         cv2.imwrite(t_f_path, t_f, [int(cv2.IMWRITE_PNG_COMPRESSION), 0])
         cv2.imwrite(mask_t_path, mask_t, [int(cv2.IMWRITE_PNG_COMPRESSION), 0])
 
-    #mp_gen.terminate_pool()
+    # mp_gen.terminate_pool()
 
 
 if __name__ == '__main__':
